@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de hardware | RWD</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, sans-serif;
+      color: #172b4d;
+      background: #f4f6f8;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: #f4f6f8; }
+    a { color: inherit; }
+    .encabezado { background: #0071ce; color: white; }
+    .encabezado-interior { max-width: 1440px; margin: 0 auto; padding: 16px 20px 0; }
+    .marca-sitio { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .marca-sitio h1 { margin: 0; font-size: 22px; }
+    .marca-sitio p { margin: 5px 0 0; color: #e6f2ff; font-size: 14px; }
+    .navegacion { display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 16px 0; }
+    .navegacion a { color: #fff; font-size: 14px; font-weight: bold; text-decoration: none; }
+    .navegacion a:hover, .navegacion a:focus-visible { text-decoration: underline; }
+
+    .contenedor { display: flex; flex-direction: column; gap: 20px; max-width: 1440px; margin: 0 auto; padding: 20px; }
+    .barra-lateral { min-width: 0; margin-bottom: 0; padding: 18px; background: #fff; border: 1px solid #e3e8ef; border-radius: 10px; }
+    .barra-lateral h2 { margin: 0 0 14px; font-size: 18px; }
+
+    .btn-desplegar { display: block; padding: 11px 12px; background: #edf4fb; border: 1px solid #d5e5f5; border-radius: 6px; color: #174a78; font-weight: bold; cursor: pointer; text-align: center; }
+    #toggle-filtros { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+    #toggle-filtros:focus-visible + .filtros-contenido { outline: 2px solid #0071ce; outline-offset: 3px; }
+    .filtros-contenido { display: none; margin-top: 15px; }
+    #toggle-filtros:checked ~ .filtros-contenido { display: block; }
+
+    .grupo-filtro { margin-bottom: 18px; }
+    .grupo-filtro h3 { margin: 0 0 8px; padding-bottom: 6px; border-bottom: 1px solid #dce2e8; font-size: 14px; }
+    .grupo-filtro label { display: inline-block; margin: 3px 8px 3px 0; color: #42526e; font-size: 14px; }
+    .grupo-filtro input { accent-color: #0071ce; }
+
+    .comparativa { margin-top: 20px; padding-top: 18px; border-top: 1px solid #e3e8ef; }
+    .comparativa h2 { margin-bottom: 4px; }
+    .nota-grafica { margin: 0 0 14px; color: #697586; font-size: 12px; line-height: 1.4; }
+    .leyenda { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 14px; color: #526174; font-size: 12px; }
+    .leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+    .muestra-color { display: inline-block; width: 9px; height: 9px; border-radius: 2px; background: #0071ce; }
+    .muestra-color.secundario { background: #ffc220; }
+    .fila-grafica { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 10px; margin: 12px 0; }
+    .etiqueta-grafica { color: #42526e; font-size: 12px; }
+    .barras { display: grid; gap: 5px; }
+    .barra-grafica { height: 9px; border-radius: 8px; background: #0071ce; }
+    .barra-grafica.secundaria { background: #ffc220; }
+
+    .catalogo { min-width: 0; flex: 1; }
+    .titulo-catalogo { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 14px; }
+    .titulo-catalogo h2 { margin: 0; font-size: 20px; }
+    .titulo-catalogo p { margin: 0; color: #697586; font-size: 13px; }
+    .rejilla { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .tarjeta { min-width: 0; padding: 16px; background: #fff; border: 1px solid #e0e6ed; border-radius: 10px; text-align: left; }
+    .tarjeta picture { display: flex; align-items: center; justify-content: center; height: 190px; margin-bottom: 14px; overflow: hidden; border-radius: 7px; background: #f8fafc; }
+    .tarjeta img { display: block; width: 100%; height: 100%; max-width: 240px; object-fit: contain; }
+    .nombre { min-height: 40px; line-height: 1.4; }
+    .precio { margin: 12px 0; color: #0071ce; font-size: 22px; font-weight: bold; }
+    .boton { width: 100%; padding: 11px; background: #ffc220; border: 0; border-radius: 6px; color: #202b3c; cursor: pointer; font-weight: bold; }
+    .boton:hover { background: #f2b600; }
+
+    .tabla-specs { width: 100%; margin: 12px 0; border-collapse: collapse; font-size: 13px; text-align: left; }
+    .tabla-specs td { padding: 7px 6px; border-bottom: 1px solid #e5e9ef; overflow-wrap: anywhere; }
+    .tabla-specs td:first-child { width: 40%; background: #f8fafc; color: #42526e; font-weight: bold; }
+
+    @media (min-width: 640px) {
+      .rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    }
+    @media (min-width: 1025px) {
+      .contenedor { flex-direction: row; align-items: flex-start; }
+      .barra-lateral { width: 280px; flex: 0 0 280px; }
+      .rejilla { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .btn-desplegar { display: none; }
+      .filtros-contenido { display: block !important; }
+    }
+    @media (max-width: 420px) {
+      .encabezado-interior { padding-right: 15px; padding-left: 15px; }
+      .contenedor { gap: 14px; padding: 14px; }
+      .marca-sitio h1 { font-size: 19px; }
+      .navegacion { gap: 8px 16px; }
+      .barra-lateral { padding: 14px; }
+      .tarjeta { padding: 13px; }
+      .tarjeta picture { height: 165px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="encabezado">
+    <div class="encabezado-interior">
+      <div class="marca-sitio">
+        <div>
+          <h1>Catálogo de Hardware</h1>
+          <p>Encuentra el equipo ideal para ti</p>
+        </div>
+      </div>
+      <nav class="navegacion" aria-label="Navegación principal">
+        <a href="#catalogo">Catálogo</a>
+        <a href="#filtros">Filtros</a>
+        <a href="#comparativa">Comparativa</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <aside class="barra-lateral" id="filtros">
+      <h2>Explora y compara</h2>
+      <label for="toggle-filtros" class="btn-desplegar">Opciones de filtros avanzados</label>
+      <input type="checkbox" id="toggle-filtros">
+
+      <div class="filtros-contenido">
+        <% [['marca', 'Marca'], ['ram', 'Memoria RAM'], ['cpu', 'Procesador']].forEach(function(grupo) { %>
+          <section class="grupo-filtro">
+            <h3><%= grupo[1] %></h3>
+            <% opcionesFiltros[grupo[0]].forEach(function(opcion) { %>
+              <label><input type="checkbox"> <%= opcion %></label>
+            <% }); %>
+          </section>
+        <% }); %>
+      </div>
+
+      <section class="comparativa" id="comparativa" aria-labelledby="titulo-comparativa">
+        <h2 id="titulo-comparativa">Comparativa de rendimiento</h2>
+        <p class="nota-grafica">Vista de muestra · valores ilustrativos</p>
+        <div class="leyenda" aria-label="Leyenda del gráfico">
+          <span><i class="muestra-color"></i>Equipo A</span>
+          <span><i class="muestra-color secundario"></i>Equipo B</span>
+        </div>
+        <div role="img" aria-label="Gráfico ilustrativo que compara dos equipos en procesador, memoria RAM y gráficos">
+          <div class="fila-grafica">
+            <span class="etiqueta-grafica">Procesador</span>
+            <div class="barras"><div class="barra-grafica" style="width: 82%;"></div><div class="barra-grafica secundaria" style="width: 64%;"></div></div>
+          </div>
+          <div class="fila-grafica">
+            <span class="etiqueta-grafica">Memoria RAM</span>
+            <div class="barras"><div class="barra-grafica" style="width: 70%;"></div><div class="barra-grafica secundaria" style="width: 88%;"></div></div>
+          </div>
+          <div class="fila-grafica">
+            <span class="etiqueta-grafica">Gráficos</span>
+            <div class="barras"><div class="barra-grafica" style="width: 58%;"></div><div class="barra-grafica secundaria" style="width: 76%;"></div></div>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <section class="catalogo" id="catalogo" aria-labelledby="titulo-catalogo">
+      <div class="titulo-catalogo">
+        <h2 id="titulo-catalogo">Laptops destacadas</h2>
+        <p>12 equipos disponibles</p>
+      </div>
+      <div class="rejilla">
+      <% productos.forEach(function(item) { %>
+        <article class="tarjeta">
+          <picture>
+            <source media="(max-width: 640px)" srcset="<%= item.img %>">
+            <img src="<%= item.img %>" alt="<%= item.nombre %>" loading="lazy">
+          </picture>
+          <div class="nombre"><strong><%= item.nombre %></strong></div>
+
+          <table class="tabla-specs">
+            <tr><td>Procesador</td><td><%= item.cpu %></td></tr>
+            <tr><td>Memoria RAM</td><td><%= item.ram %></td></tr>
+          </table>
+
+          <div class="precio"><%= item.precio %></div>
+          <button class="boton">Comprar</button>
+        </article>
+      <% }); %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

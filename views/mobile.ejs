@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardware AWD Móvil</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+    .encabezado { background-color: #0071ce; padding: 15px; text-align: center; color: white; margin-bottom: 15px; }
+    .filtros-movil { padding: 0 15px; display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
+    .filtros-movil select { flex: 1 1 30%; min-width: 0; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; }
+    
+    .comparativa { margin: 0 15px 15px; padding: 15px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; }
+    .comparativa h4 { margin: 0 0 5px; }
+    .nota-grafica { margin: 0 0 12px; color: #697586; font-size: 12px; }
+    .leyenda { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 12px; color: #526174; font-size: 12px; }
+    .leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+    .muestra-color { display: inline-block; width: 9px; height: 9px; border-radius: 2px; background: #0071ce; }
+    .muestra-color.secundario { background: #ffc220; }
+    .fila-grafica { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 8px; margin: 12px 0; }
+    .etiqueta-grafica { color: #42526e; font-size: 12px; }
+    .barras { display: grid; gap: 5px; }
+    .barra-grafica { height: 9px; border-radius: 8px; background: #0071ce; }
+    .barra-grafica.secundaria { background: #ffc220; }
+
+    .tarjeta { background: #fff; border: 1px solid #e0e0e0; padding: 15px; text-align: center; border-radius: 8px; margin: 0 15px 15px 15px; }
+    .tarjeta img { width: 100%; max-width: 200px; margin: 0 auto 10px auto; display: block; }
+    .precio { color: #0071ce; font-size: 22px; font-weight: bold; margin-bottom: 10px; }
+    .boton { background-color: #ffc220; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="encabezado">
+    <h3 style="margin:0;">Catálogo AWD (Móvil)</h3>
+  </div>
+  
+  <div class="filtros-movil">
+    <select aria-label="Marca">
+      <option value="">Todas las marcas</option>
+      <% opcionesFiltros.marca.forEach(function(opcion) { %>
+        <option value="<%= opcion %>"><%= opcion %></option>
+      <% }); %>
+    </select>
+    <select aria-label="Memoria RAM">
+      <option value="">Toda la memoria RAM</option>
+      <% opcionesFiltros.ram.forEach(function(opcion) { %>
+        <option value="<%= opcion %>"><%= opcion %></option>
+      <% }); %>
+    </select>
+    <select aria-label="Procesador">
+      <option value="">Todos los procesadores</option>
+      <% opcionesFiltros.cpu.forEach(function(opcion) { %>
+        <option value="<%= opcion %>"><%= opcion %></option>
+      <% }); %>
+    </select>
+  </div>
+
+  <section class="comparativa" aria-labelledby="titulo-comparativa">
+    <h4 id="titulo-comparativa">Comparativa de rendimiento</h4>
+    <p class="nota-grafica">Vista de muestra · valores ilustrativos</p>
+    <div class="leyenda" aria-label="Leyenda del gráfico">
+      <span><i class="muestra-color"></i>Equipo A</span>
+      <span><i class="muestra-color secundario"></i>Equipo B</span>
+    </div>
+    <div role="img" aria-label="Gráfico ilustrativo que compara dos equipos en procesador, memoria RAM y gráficos">
+      <div class="fila-grafica">
+        <span class="etiqueta-grafica">Procesador</span>
+        <div class="barras"><div class="barra-grafica" style="width: 82%;"></div><div class="barra-grafica secundaria" style="width: 64%;"></div></div>
+      </div>
+      <div class="fila-grafica">
+        <span class="etiqueta-grafica">Memoria RAM</span>
+        <div class="barras"><div class="barra-grafica" style="width: 70%;"></div><div class="barra-grafica secundaria" style="width: 88%;"></div></div>
+      </div>
+      <div class="fila-grafica">
+        <span class="etiqueta-grafica">Gráficos</span>
+        <div class="barras"><div class="barra-grafica" style="width: 58%;"></div><div class="barra-grafica secundaria" style="width: 76%;"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <% productos.forEach(function(item) { %>
+    <div class="tarjeta">
+      <img src="<%= item.img %>" alt="<%= item.nombre %>">
+      <div class="nombre" style="margin-bottom: 5px;"><strong><%= item.nombre %></strong></div>
+      
+      <div class="precio"><%= item.precio %></div>
+      <button class="boton">Comprar</button>
+    </div>
+  <% }); %>
+</body>
+</html>
